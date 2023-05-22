@@ -8,7 +8,7 @@ tags:
   - name: user
     description: Operations about user
 paths:
-  /friends/id{user_id}&Token={auth_token}:
+  /friends/{user_id}:
     get:
       tags:
         - user
@@ -20,11 +20,6 @@ paths:
          required: true
          schema:
            $ref: "#/components/schemas/UserId"
-       - name: auth_token
-         in: path
-         required: true
-         schema:
-           $ref: "#/components/schemas/AuthToken"
       responses:
         '200':
           description: Successful response with friends list
@@ -32,13 +27,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Friends"
-        'default':
-          description: Some error occured
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /friends/id{user_id}&FriendId={friend_id}&Token={auth_token}:
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error or database unavailable
+        '503':
+          description: Service unavailable
+          
+  /friends/{user_id}&FriendId={friend_id}:
     post:
       tags:
         - user
@@ -55,24 +51,17 @@ paths:
          required: true
          schema:
            $ref: "#/components/schemas/UserId"
-       - name: auth_token
-         in: path
-         required: true
-         schema:
-           $ref: "#/components/schemas/AuthToken"
       responses:
         '200':
-          description: Successful response with added friend userId
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserId"
-        'default':
-          description: Some error occured
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          description: Successful response
+        '400':
+          description: Incorrect friend ID
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error or database unavailable
+        '503':
+          description: Service unavailable
     delete:
       tags:
         - user
@@ -89,25 +78,18 @@ paths:
          required: true
          schema:
            $ref: "#/components/schemas/UserId"
-       - name: auth_token
-         in: path
-         required: true
-         schema:
-           $ref: "#/components/schemas/AuthToken"
       responses:
         '200':
-          description: Successful response with deleted friend userId
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserId"
-        'default':
-          description: Some error occured
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"  
-  /profile/id{user_id}&Token={auth_token}:
+          description: Successful response
+        '400':
+          description: Incorrect friend ID
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error or database unavailable
+        '503':
+          description: Service unavailable
+  /profile/{user_id}:
     get:
       tags:
         - user
@@ -119,11 +101,6 @@ paths:
          required: true
          schema:
            $ref: "#/components/schemas/UserId"
-       - name: auth_token
-         in: path
-         required: true
-         schema:
-           $ref: "#/components/schemas/AuthToken"
       responses:
         '200':
           description: Successful response with user profile
@@ -131,13 +108,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
-        'default':
-          description: Some error occured
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /timeline/id{user_id}&Token={auth_token}:
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error or database unavailable
+        '503':
+          description: Service unavailable
+          
+  /timeline/{user_id}:
     get:
       tags:
         - user
@@ -149,11 +127,6 @@ paths:
          required: true
          schema:
            $ref: "#/components/schemas/UserId"
-       - name: auth_token
-         in: path
-         required: true
-         schema:
-           $ref: "#/components/schemas/AuthToken"
       responses:
         '200':
           description: Successful response with user timeline
@@ -161,16 +134,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Timeline"
-        'default':
-          description: Some error occured
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error or database unavailable
+        '503':
+          description: Service unavailable
     post:
       tags:
         - user
-      summary: Add a post to user timeline
+      summary: Add post to user timeline
       operationId: addPostToUserTimeline
       parameters: 
        - name: user_id
@@ -178,11 +151,6 @@ paths:
          required: true
          schema:
            $ref: "#/components/schemas/UserId"
-       - name: auth_token
-         in: path
-         required: true
-         schema:
-           $ref: "#/components/schemas/AuthToken"
       requestBody:
         required: true
         content:
@@ -196,17 +164,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Post"
-        'default':
-          description: Some error occured
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error" 
-  /media/id{user_id}&Token={auth_token}:
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error or database unavailable
+        '503':
+          description: Service unavailable
+  /media/{user_id}:
     post:
       tags:
         - user
-      summary: Add a post to user timeline
+      summary: Add media file
       operationId: addMedia
       parameters: 
        - name: user_id
@@ -214,11 +182,6 @@ paths:
          required: true
          schema:
            $ref: "#/components/schemas/UserId"
-       - name: auth_token
-         in: path
-         required: true
-         schema:
-           $ref: "#/components/schemas/AuthToken"
       requestBody:
         required: true
         content:
@@ -236,13 +199,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Links"
-        'default':
-          description: Some error occured
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /messages/id{user_id}&DialogType={dialog_type}&Id={dest_id}&BeginMsgId={msg_id}&Token={auth_token}:
+        '404':
+          description: User not found
+        '415':
+          description: Media type not allowed
+        '500':
+          description: Internal server error or database unavailable
+        '503':
+          description: Service unavailable
+        '507':
+          description: File too large
+          
+  /messages/id{user_id}&DialogType={dialog_type}&Id={dest_id}&BeginMsgId={msg_id}:
     get:
       tags:
         - user
@@ -271,30 +239,27 @@ paths:
          description: first message ID
          schema:
            $ref: "#/components/schemas/Id"
-       - name: auth_token
-         in: path
-         required: true
-         schema:
-           $ref: "#/components/schemas/AuthToken"
       responses:
         '200':
           description: Successful response with requested messages
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PostList"
-        'default':
-          description: Some error occured
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"   
+                $ref: "#/components/schemas/MessageList"
+        '400':
+          description: Wrong input
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error or database unavailable
+        '503':
+          description: Service unavailable  
                 
-  /messages/id{user_id}&DialogType={dialog_type}&Id={dest_id}&Token={auth_token}:
+  /messages/id{user_id}&DialogType={dialog_type}&Id={dest_id}:
     post:
       tags:
         - user
-      summary: Send a message to user/user group
+      summary: Send message to user/user group
       operationId: sendMessage
       parameters: 
        - name: user_id
@@ -313,30 +278,27 @@ paths:
          description: dialog_type ID
          schema:
            $ref: "#/components/schemas/Id"
-       - name: auth_token
-         in: path
-         required: true
-         schema:
-           $ref: "#/components/schemas/AuthToken"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PostData"
+              $ref: "#/components/schemas/MessageData"
       responses:
         '200':
           description: Successful response with sent message
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Post"
-        'default':
-          description: Some error occured
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"   
+                $ref: "#/components/schemas/Message"
+        '400':
+          description: Wrong input
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error or database unavailable
+        '503':
+          description: Service unavailable    
 components:
   schemas:
     Error:
@@ -405,6 +367,43 @@ components:
         data:
           type: array
           items: {}
+    MessageData:
+      type: object
+      required:
+       - message
+       - media
+      properties:
+        message:
+         type: string
+         example: hello world
+        media:
+         type: array
+         items:
+           $ref: "#/components/schemas/Link"
+    Message:
+      type: object
+      required:
+       - id
+       - handlerId
+       - date
+       - postData
+      properties:
+        id:
+         allOf:
+           - $ref: "#/components/schemas/Id"
+        handlerId:
+         allOf:
+           - $ref: "#/components/schemas/UserId"
+        date:
+         allOf:
+           - $ref: "#/components/schemas/Date"
+        postData:
+         allOf:
+           - $ref: "#/components/schemas/MessageData"
+    MessageList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Message"
     PostData:
       type: object
       required:
