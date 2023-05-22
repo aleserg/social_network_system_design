@@ -301,34 +301,6 @@ paths:
           description: Service unavailable    
 components:
   schemas:
-    Error:
-      required:
-        - code
-        - description
-      properties:
-        code:
-         type: integer
-         format: int64
-         example: 1
-        description:
-         type: string
-         example: Object not found
-    AuthToken:
-      type: string
-      example: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NSIsIm5hbWUiOiJKb2huIEdvbGQiLCJhZG1pbiI6dHJ1ZX0K.LIHjWCBORSWMEibq-tnT8ue_deUqZx1K0XxCOXZRrBI
-    AuthFields:
-      type: object
-      required:
-        - login
-        - password
-      properties:
-        login:
-          type: string
-          example: login123
-        password:
-          type: string
-          example: qwerty12345
-     
     Id: 
       type: integer
       format: int64
