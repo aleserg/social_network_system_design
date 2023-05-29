@@ -21,7 +21,6 @@ Project BLOB_storage_DB
   Table files
   {
     link varchar [pk]
-    description text
     type file_type
     file binary
   }
