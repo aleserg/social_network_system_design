@@ -4,19 +4,34 @@
  replication factor 3
  -------------
  Sharding:
- key-based by ID
+ smart sharding
 */
 
 Project chats_DB 
 {
   database_type: 'PostgreSQL'
-  Note: 'All about posts'
+  Note: 'All about chats'
     
   Table chats
   {
     id integer[pk]
     name varchar
-    userIds integer[] [ note: 'ref: < users_DB.profiles.id' ]
-    messageIds integer[] [ note: 'ref: < messages_DB.messages.id' ]
+	last_message_id integer
   }
+  
+  Table messages
+  {
+    id integer[pk]
+	chat_id integer [ note: 'chats_DB.chats.id' ]
+    sender_id integer [ note: 'ref: < users_DB.profiles.id' ]
+	body text
+	created_at timestamp
+  }
+  
+  Table last_seen_messages
+  {
+    user_id integer
+	char_id integer
+	message_id integer
+  } 
 }

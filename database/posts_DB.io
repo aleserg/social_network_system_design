@@ -4,7 +4,7 @@
  replication factor 3
  -------------
  Sharding:
- key-based by ID
+ key-based by post_ID
 */
 
 Project posts_DB 
@@ -18,13 +18,21 @@ Project posts_DB
     writerId integer [ note: 'ref: < users_DB.profiles.id' ]
     message text
     mediaLinks varchar[] [ note: 'links to media files, added to post. ref: < BLOB_storage_DB.files.link.']
-    hashtagNames varchar[] [ note: 'ref: < hashtags.name' ]
+	hashtagsIDs integer[] [ ref: < hashtags.id ]
     created_at timestamp
+  }
+  
+  Table hashtags
+  {
+    id integer
+    name varchar
+	postId integer [ ref: < posts.id ]
   }
   
   Table comments
   {
     id integer [ ref: - posts.id ]
+	reply_ids integer[] [ ref: < comments.id ]
     writerIds integer[] [ note: 'ref: < users_DB.profiles.id' ]
     messages text[]
   }
